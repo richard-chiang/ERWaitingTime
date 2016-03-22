@@ -28,24 +28,29 @@ import {HTTPService} from './http.service';
         <input type="submit" (click)="
             addVisit(pid.value, sid.value, room.value, date.value)">
             
-            {{msg}}
 `,
 providers:[HTTPService]
 })
 export class VisitComponent{
-msg:string;
 visits:Array<Visit>;
 
 constructor(private httpService: HTTPService){
     this.visits = [];
     this.httpService.getQuery().subscribe(
-        data => this.msg = JSON.stringify(data),
+        data => this.parseVisit(data),
         err => alert(err),
         () => console.log("complete")
     );
 }
 
-
+parseVisit(json){
+    json.forEach( item => {
+        this.addVisit(item.pid,
+        item.sid,
+        item.room,
+        item.visit_date);
+    })
+}
 
 addVisit(pid:number, sid:number, room:number, date:Date){
         let visit = new Visit(pid,sid,room,date);
